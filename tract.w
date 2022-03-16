@@ -4,8 +4,8 @@ excitation signal (the glottis) and produces the vowel formants from it.
 
 The two main functions for the vocal tract consist of of an initialization
 function |tract_init| called once before runtime, and a computation
-function |tract_compute| called at twice the sampling rate. See 
-|@<Vocal Tract Init...@>| and |@<Vocal Tract Computation...@>| for more 
+function |tract_compute| called at twice the sampling rate. See
+|@<Vocal Tract Init...@>| and |@<Vocal Tract Computation...@>| for more
 detail.
 
 @<The Vocal Tract@>=
@@ -17,7 +17,7 @@ detail.
 @<Vocal Tract Computation...@>@/
 
 @ The function |tract_init| is responsible for zeroing out variables
-and buffers, as well as setting up constants. 
+and buffers, as well as setting up constants.
 
 @<Vocal Tract Initialization@>=
 static void tract_init(sp_data *sp, tract *tr)
@@ -58,9 +58,9 @@ tr->lip_output = 0;
 tr->nose_output = 0;
 tr->tip_start = 32;
 
-@ Several floating-point arrays are needed for the scattering junctions. 
-C does not zero these out by default. Below, the standard function 
-|memset()| from |string.h| is used to zero out each of the blocks of memory. 
+@ Several floating-point arrays are needed for the scattering junctions.
+C does not zero these out by default. Below, the standard function
+|memset()| from |string.h| is used to zero out each of the blocks of memory.
 @<Zero Out Tract Buffers@>=
 memset(tr->diameter, 0, tr->n * sizeof(SPFLOAT));
 memset(tr->rest_diameter, 0, tr->n * sizeof(SPFLOAT));
@@ -98,8 +98,8 @@ for(i = 0; i < tr->n; i++) {
         diameter = 1.5;
     }
 
-    tr->diameter[i] = 
-        tr->rest_diameter[i] = 
+    tr->diameter[i] =
+        tr->rest_diameter[i] =
         tr->target_diameter[i] = diameter;
 
 }
@@ -114,27 +114,27 @@ The shape of the nasal passage is plotted below:
 % TODO: use gnuplot to generate picture of what it looks like
 @<Set up Nose Diameters@>=
     for(i = 0; i < tr->nose_length; i++) {
-        d = 2 * ((SPFLOAT)i / tr->nose_length); 
+        d = 2 * ((SPFLOAT)i / tr->nose_length);
         if(d < 1) {
             diameter = 0.4 + 1.6 * d;
         } else {
             diameter = 0.5 + 1.5*(2-d);
         }
         diameter = MIN(diameter, 1.9);
-        tr->nose_diameter[i] = diameter; 
+        tr->nose_diameter[i] = diameter;
     }
 
 @ The vocal tract computation function computes a single sample of audio.
 As the original implementation describes it, this function is designed
-to run at twice the sampling rate. For this reason, it is called twice 
-in the top level call back (see |@<Voc Create@>|). 
+to run at twice the sampling rate. For this reason, it is called twice
+in the top level call back (see |@<Voc Create@>|).
 
 |tract_compute| has two input arguments. The variable |in|
 is the glottal excitation signal. The |lambda| variable is a coefficient
 for a linear crossfade along the buffer block, used for parameter smoothing.
 @<Vocal Tract Computation...@>=
-static void tract_compute(sp_data *sp, tract *tr, 
-    SPFLOAT @, in, 
+static void tract_compute(sp_data *sp, tract *tr,
+    SPFLOAT @, in,
     SPFLOAT @, lambda)
 {
     @/ SPFLOAT @, r, w;
@@ -153,8 +153,8 @@ static void tract_compute(sp_data *sp, tract *tr,
     @<Update Nose Left/Right delay lines...@>@/
 }
 
-@ A derivation of $w$ can be seen in section 2.5.2 of Jack Mullens 
-PhD dissertation {\it Physical Modelling of the Vocal Tract 
+@ A derivation of $w$ can be seen in section 2.5.2 of Jack Mullens
+PhD dissertation {\it Physical Modelling of the Vocal Tract
 with the 2D Digital Waveguide Mesh}.
 \cite{mullen2006physical}
 @<Calculate Scattering Junctions@>=
@@ -185,7 +185,7 @@ for(i = 0; i < tr->n; i++) {
 tr->lip_output = tr->R[tr->n - 1];
 
 @ @<Calculate Nose Scattering Junctions@>=
-tr->nose_junc_outL[tr->nose_length] = 
+tr->nose_junc_outL[tr->nose_length] =
     tr->noseR[tr->nose_length-1] * tr->lip_reflection;
 
 for(i = 1; i < tr->nose_length; i++) {
@@ -201,13 +201,13 @@ for(i = 0; i < tr->nose_length; i++) {
 }
 tr->nose_output = tr->noseR[tr->nose_length - 1];
 
-@ The function |tract_calculate_reflections| computes reflection 
+@ The function |tract_calculate_reflections| computes reflection
 coefficients used in the scattering junction. Because this is a rather
 computationally expensive function, it is called once per render block,
-and then smoothed. 
+and then smoothed.
 
-First, the cylindrical areas of tract section are computed by squaring 
-the diameters, they are stored in the struct variable |A|. 
+First, the cylindrical areas of tract section are computed by squaring
+the diameters, they are stored in the struct variable |A|.
 
 Using the areas calculated, the reflections are calculated using the following
 formula:
@@ -219,7 +219,7 @@ is set to be $0.999$.
 
 From there, the new coefficients are set. %TODO: elaborate
 
-% TODO: The following eqn above will be derived by Julius. would be nice to 
+% TODO: The following eqn above will be derived by Julius. would be nice to
 % have!
 @<Calculate Vocal Tract Reflections @>=
 static void tract_calculate_reflections(tract *tr)
@@ -228,7 +228,7 @@ static void tract_calculate_reflections(tract *tr)
     SPFLOAT @, sum; @/
 
     for(i = 0; i < tr->n; i++) {
-        tr->A[i] = tr->diameter[i] * tr->diameter[i]; 
+        tr->A[i] = tr->diameter[i] * tr->diameter[i];
         /* Calculate area from diameter squared*/
     }
 
@@ -237,7 +237,7 @@ static void tract_calculate_reflections(tract *tr)
         if(tr->A[i] == 0) {
             tr->new_reflection[i] = 0.999; /* to prevent bad behavior if 0 */
         } else {
-            tr->new_reflection[i] = 
+            tr->new_reflection[i] =
                 (tr->A[i - 1] - tr->A[i]) / (tr->A[i - 1] + tr->A[i]);
         }
     }
@@ -252,9 +252,9 @@ static void tract_calculate_reflections(tract *tr)
     tr->new_reflection_nose = (SPFLOAT)(2 * tr->noseA[0] - sum) / sum;
 }
 
-@ Similar to |tract_calculate_reflections|, this function computes 
-reflection coefficients for the nasal scattering junction. For more 
-information on the math that is happening, see 
+@ Similar to |tract_calculate_reflections|, this function computes
+reflection coefficients for the nasal scattering junction. For more
+information on the math that is happening, see
 |@<Calculate Vocal Tract Reflections@>|.
 % TODO: is "nasal scattering junction" the proper terminology?
 @<Calculate Vocal Tract Nose Reflections @>=
@@ -272,7 +272,7 @@ static void tract_calculate_nose_reflections(tract *tr)
     }
 }
 
-@ %TODO: Explain these functions. 
+@ %TODO: Explain these functions.
 
 @<Reshape Vocal Tract @>=
 
@@ -285,7 +285,7 @@ static void tract_reshape(tract *tr)
     int i;
     int current_obstruction;
 
-    current_obstruction = -1; 
+    current_obstruction = -1;
     amount = tr->block_time * tr->movement_speed;
 
     for(i = 0; i < tr->n; i++) {
@@ -298,16 +298,16 @@ static void tract_reshape(tract *tr)
         if(i < tr->nose_start) slow_return = 0.6;
         else if(i >= tr->tip_start) slow_return = 1.0;
         else {
-            slow_return = 
+            slow_return =
                 0.6+0.4*(i - tr->nose_start)/(tr->tip_start - tr->nose_start);
         }
 
-        tr->diameter[i] = move_towards(diameter, target_diameter, 
+        tr->diameter[i] = move_towards(diameter, target_diameter,
                 slow_return * amount, 2 * amount);
 
     }
 
-    if(tr->last_obstruction > -1 && current_obstruction == -1 && 
+    if(tr->last_obstruction > -1 && current_obstruction == -1 &&
             tr->noseA[0] < 0.05) {
         append_transient(&tr->tpool, tr->last_obstruction);
     }
@@ -319,9 +319,9 @@ static void tract_reshape(tract *tr)
 }
 
 @ In Pink Trombone, there is a special handling of diameters that are exactly
-zero. From a physical point of view, air is completly blocked, and this 
-obstruction of air produces a transient "click" sound. To simulate this, 
-any obstructions are noted during the reshaping of the vocal tract 
+zero. From a physical point of view, air is completly blocked, and this
+obstruction of air produces a transient "click" sound. To simulate this,
+any obstructions are noted during the reshaping of the vocal tract
 (see |@<Reshape...@>|), and the latest obstruction position is noted and pushed
 onto a stack of transients. During the vocal tract computation, the exponential
 damping contributes to the overal amplitude of the left-going and right-going
@@ -339,7 +339,7 @@ inside of |@<Vocal Tract Initialization@>|. It essentially sets the pool
 to a size of zero and that the first available free transient is at index "0".
 
 The transients in the pool will all have their boolean variable |is_free|,
-set to be true so that they can be in line to be selected. 
+set to be true so that they can be in line to be selected.
 
 To remove any valgrind issues related to unitialized variables, {\it all}
 the members in the |transient| data struct are set to some parameter.
@@ -356,25 +356,25 @@ for(i = 0; i < MAX_TRANSIENTS; i++) {
     tr->tpool.pool[i].exponent = 0;
 }
 
-@ Any obstructions noted during |@<Reshape...@>| must be appended to the list 
-of previous transients. 
+@ Any obstructions noted during |@<Reshape...@>| must be appended to the list
+of previous transients.
 The function will return a 0 on failure, and a 1 on success.
 
 Here is an overview of how a transient may get appended:
 \item{0.} Check and see if the pool is full. If this is so, return 0.
-\item{1.} If there is no recorded next free (the id is -1), search for 
+\item{1.} If there is no recorded next free (the id is -1), search for
 one using brute force and check for any free transients. If none can be
-found, return 0. Since |MAX_TRANSIENTS| is a low N, even the worst-case 
-searches do not pose a significant performance penalty. 
+found, return 0. Since |MAX_TRANSIENTS| is a low N, even the worst-case
+searches do not pose a significant performance penalty.
 \item{2.} With a transient found, assign the current root of the list to be
-the next value in the transient. (It does not matter if the root is NULL, 
+the next value in the transient. (It does not matter if the root is NULL,
 because the size of the list will prevent it from ever being accessed.)
 \item{3.} Increase the size of the pool by 1.
 \item{4.} Toggle the |is_free| boolean of the current transient to be false.
 \item{5.} Set the |position|.
 \item{6.} Set the |time_alive| to be zero seconds.
 \item{7.} Set the |lifetime| to be 200ms, or 0.2 seconds.
-\item{8.} Set the |strength| to an amplitude 0.3. 
+\item{8.} Set the |strength| to an amplitude 0.3.
 \item{9.} Set the |exponent| parameter to be 200.
 \item{10.} Set the |next_free| parameter to be $-1$.
 
@@ -416,16 +416,16 @@ static int append_transient(transient_pool *pool, int position)
 @ When a transient has lived it's lifetime, it must be removed from the list of
 transients. To keep things sane, transients have a unique ID for identification.
 This is preferred to comparing pointer addresses. While more efficient, this
-method is prone to subtle implementation errors. 
+method is prone to subtle implementation errors.
 
 The method for removing a transient from a linked list is fairly typical:
 
-\item{0.} If the transient *is* the root, set the root to be the next value. 
+\item{0.} If the transient *is* the root, set the root to be the next value.
 Decrease the size by one, and return.
-\item{1.} Iterate through the list and search for the entry. 
-\item{2.} Once the entry has been found, decrease the pool size by 1. 
+\item{1.} Iterate through the list and search for the entry.
+\item{2.} Once the entry has been found, decrease the pool size by 1.
 \item{3.} The transient, now free for reuse, can now be toggled to be free,
-and it can be the next variable ready to be used again. 
+and it can be the next variable ready to be used again.
 @<Remove Transient@>=
 
 static void remove_transient(transient_pool *pool, unsigned int id)
@@ -453,8 +453,8 @@ static void remove_transient(transient_pool *pool, unsigned int id)
 }
 
 @ Transients are processed during |@<Vocal Tract Computation@>|. The transient
-list is iterated through, their contributions are made to the Left and Right 
-delay lines. 
+list is iterated through, their contributions are made to the Left and Right
+delay lines.
 
 In this implementation, the transients in the list are iterated through, and
 their contributions are calculated using the following exponential function:
@@ -466,14 +466,14 @@ Where:
 components.
 \item{$\bullet$} $s$ is the overall strength of the transient.
 \item{$\bullet$} $E_0$ is the exponent variable constant.
-\item{$\bullet$} $t$ is the time alive. 
+\item{$\bullet$} $t$ is the time alive.
 
 This particular function also must check for any transients that need to
 be removed, and removes them. Some caution must be made to make sure that
-this is done properly. Because a call to |remove_transient| changes the 
-size of the pool, a copy of the current size is copied to a variable for the 
+this is done properly. Because a call to |remove_transient| changes the
+size of the pool, a copy of the current size is copied to a variable for the
 for loop.
-Since the list iterates in order, it is presumably 
+Since the list iterates in order, it is presumably
 safe to remove values from the list while the list is iterating.
 
 

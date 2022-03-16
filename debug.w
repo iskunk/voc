@@ -1,12 +1,12 @@
 @* Small Applications and Examples.
 
-It has been fruitful investment to write small applications to assist in the 
-debugging process. Such programs can be used to generate plots or visuals, or 
-to act as a simple program to be used with GDB. In addition to debugging, 
+It has been fruitful investment to write small applications to assist in the
+debugging process. Such programs can be used to generate plots or visuals, or
+to act as a simple program to be used with GDB. In addition to debugging,
 these programs are also used to quickly try out concepts or ideas.
 
 @ \subsec{A Program for Non-Realtime Processing and Debugging}
-The example program below is a C program designed out of necessity to debug 
+The example program below is a C program designed out of necessity to debug
 and test Voc. It a program with a simple commandline interface, where
 the user gives a "mode" along with set of optional arguments.
 
@@ -16,11 +16,11 @@ The following modes are as follows:
 must supply a duration (in samples).
 \item{$\bullet$} {\bf plot:} Uses sp\_process\_plot to generate a
 matlab/octave compatible program that plots the audio output.
-\item{$\bullet$} {\bf tongue:} Will be a test program that experiments with 
+\item{$\bullet$} {\bf tongue:} Will be a test program that experiments with
 parameters manipulating tongue position. It takes in tongue index and diameter
 parameters, to allow for experimentation without needing to recompile.
 
-The functions needed to call Voc from C in this way are found in the 
+The functions needed to call Voc from C in this way are found in the
 section |@<Top Level...@>|.
 
 @(debug.c@>=
@@ -68,7 +68,7 @@ static void run_tongue(SPFLOAT tongue_index, SPFLOAT tongue_diameter)
     sp_voc_create(&voc);
     sp_voc_init(sp, voc);
 
-    fprintf(stderr, "Tongue index: %g. Tongue diameter: %g\n", 
+    fprintf(stderr, "Tongue index: %g. Tongue diameter: %g\n",
         tongue_index,
         tongue_diameter);
     sp_voc_set_tongue_shape(voc, tongue_index, tongue_diameter);
@@ -88,16 +88,16 @@ int main(int argc, char *argv[])
 
     if(!strcmp(argv[1], "plot")) {
         if(argc < 3) {
-            fprintf(stderr, 
-                    "Usage: %s plot duration (samples)\n", 
+            fprintf(stderr,
+                    "Usage: %s plot duration (samples)\n",
                     argv[0]);
             exit(0);
         }
         run_voc(atoi(argv[2]), 0);
     } else if(!strcmp(argv[1], "audio")) {
         if(argc < 3) {
-            fprintf(stderr, 
-                    "Usage: %s audio duration (samples)\n", 
+            fprintf(stderr,
+                    "Usage: %s audio duration (samples)\n",
                     argv[0]);
             exit(0);
         }
@@ -118,7 +118,7 @@ int main(int argc, char *argv[])
 
 @ \subsec{A Utility for Plotting Data}
 The following program below is used to write data files to be read by
-GNUplot. The primary use of this program is for generating use plots 
+GNUplot. The primary use of this program is for generating use plots
 in this document, such as those seen in the section |@<The Vocal Tract@>|.
 
 @(plot.c@>=
@@ -211,7 +211,7 @@ static void plot_tongue_shape(int num)
     sp_destroy(&sp);
 }
 
-int main(int argc, char **argv) 
+int main(int argc, char **argv)
 {
     if(argc < 2) {
         fprintf(stderr, "Usage: %s plots/name.dat\n", argv[0]);

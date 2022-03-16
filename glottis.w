@@ -1,9 +1,9 @@
 @* The Glottis.
 
-This is where the synthesis of the glottal source signal will be created. 
+This is where the synthesis of the glottal source signal will be created.
 
-While the implementation comes directly from Pink Trombone's JavaScript code, 
-it should be noted that the glottal model is based on a modified 
+While the implementation comes directly from Pink Trombone's JavaScript code,
+it should be noted that the glottal model is based on a modified
 LF-model\cite{lu2000glottal}.
 
 @<The Glottis@>=
@@ -12,7 +12,7 @@ LF-model\cite{lu2000glottal}.
 @<Glottis Update@>@/
 @<Glottis Computation@>@/
 
-@ Initializiation of the glottis is done inside of |glottis_init|. 
+@ Initializiation of the glottis is done inside of |glottis_init|.
 
 @<Glottis Initialization@>=
 static void glottis_init(glottis *glot, SPFLOAT sr)
@@ -134,16 +134,16 @@ SPFLOAT z;
 SPFLOAT alpha;
 SPFLOAT E0;
 
-@ To begin, both |waveform_length| and $R_d$ are calcuated. 
+@ To begin, both |waveform_length| and $R_d$ are calcuated.
 
-The variable |waveform_length| is the period of the waveform based on the 
-current frequency, and will be used later on in |@<Glottis Computation@>|. 
+The variable |waveform_length| is the period of the waveform based on the
+current frequency, and will be used later on in |@<Glottis Computation@>|.
 
 $R_d$ is part of a set of normalized timing parameters used to calculate
-the time coefficients described in the LF model \cite{fant1997voice}. 
+the time coefficients described in the LF model \cite{fant1997voice}.
 The other timing parameters $R_a$, $R_g$, and $R_k$ can
-be computed in terms of $R_d$, which is why this gets computed first. 
-$R_d$ is derived from the parameter |glot->tenseness|. 
+be computed in terms of $R_d$, which is why this gets computed first.
+$R_d$ is derived from the parameter |glot->tenseness|.
 
 $R_d$ is then clamped to be in between 0.5 and 2.7, as these
 are good approximations\cite{lu2000glottal}.
@@ -156,12 +156,12 @@ Rd = glot->Rd;
 if(Rd < 0.5) Rd = 0.5;
 if(Rd > 2.7) Rd = 2.7;
 
-@ $R_d$ can be used to calculate approximations for $R_a$, $R_g$, and $R_k$. 
-The equations described below have been derived using linear regression. 
+@ $R_d$ can be used to calculate approximations for $R_a$, $R_g$, and $R_k$.
+The equations described below have been derived using linear regression.
 $$R_{ap} = {(-1 + 4.8R_d) \over 100}$$
 $$R_{kp} = {(22.4 + 11.8R_d) \over 100}$$
 
-$R_{gp}$ is derived using the results from $R_{ap}$ and $R_{kp}$ in 
+$R_{gp}$ is derived using the results from $R_{ap}$ and $R_{kp}$ in
 the following equation described in Fant 1997:
 
 $$R_d = (1/0.11)(0.5 + 1.2R_{k})(R_k / 4R_g + R_a)$$
@@ -171,15 +171,15 @@ $$R_{gp} = {(R_{kp}/4)(0.5 + 1.2R_{kp})\over
 (0.11R_d - R_{ap}*(0.5+1.2R_{kp}))}$$
 
 @<Derive $R_a$, $R_k$, and $R_g$@>=
-Ra = -0.01 + 0.048*Rd; 
+Ra = -0.01 + 0.048*Rd;
 Rk = 0.224 + 0.118*Rd;
 Rg = (Rk/4)*(0.5 + 1.2*Rk)/(0.11*Rd-Ra*(0.5+1.2*Rk));
 
-@ The parameters approximating $R_a$, $R_g$, and $R_k$ can be used to 
+@ The parameters approximating $R_a$, $R_g$, and $R_k$ can be used to
 calculate the timing parameters $T_a$, $T_p$, and $T_e$ in the LF model:
 
-$$T_a = R_{ap}$$ 
-$$T_p = 2R_{gp}^{-1}$$ 
+$$T_a = R_{ap}$$
+$$T_p = 2R_{gp}^{-1}$$
 $$T_e = T_p + T_pR_{kp}$$
 
 @<Derive $T_a$, $T_p$, and $T_e$@>=
