@@ -29,7 +29,7 @@ implementation |@(ugen.c@>|.
 @<Voc Set Velum@>@/
 @<Voc Get Velum@>@/
 
-@ In the function |sp_voc_create|, an instance of Voc is created via |malloc|.
+@ In the function |sp_voc_create()|, an instance of Voc is created via |malloc()|.
 
 @<Voc Create@>=
 int sp_voc_create(sp_voc **voc)
@@ -38,7 +38,7 @@ int sp_voc_create(sp_voc **voc)
     return SP_OK;
 }
 
-@ As a counterpart to |sp_voc_compute|, |sp_voc_destroy| frees all data
+@ As a counterpart to |sp_voc_compute()|, |sp_voc_destroy()| frees all data
 previous allocated.
 
 @<Voc Destroy@>=
@@ -48,8 +48,8 @@ int sp_voc_destroy(sp_voc **voc)
     return SP_OK;
 }
 
-@ After data has been allocated with |sp_voc_create|, it must be initialized
-with |sp_voc_init|.
+@ After data has been allocated with |sp_voc_create()|, it must be initialized
+with |sp_voc_init()|.
 
 @<Voc Initialization@>=
 int sp_voc_init(sp_data *sp, sp_voc *voc)
@@ -60,7 +60,7 @@ int sp_voc_init(sp_data *sp, sp_voc *voc)
     return SP_OK;
 }
 
-@ The function |sp_voc_compute| is called during runtime to generate audio.
+@ The function |sp_voc_compute()| is called during runtime to generate audio.
 This computation function will generate a single sample of audio and store it
 in the |SPFLOAT| pointer |*out|.
 
@@ -98,7 +98,7 @@ int sp_voc_compute(sp_data *sp, sp_voc *voc, SPFLOAT *out)
     return SP_OK;
 }
 
-@ The function |sp_voc_compute_tract| computes the vocal tract component of
+@ The function |sp_voc_compute_tract()| computes the vocal tract component of
 Voc separately from the glottis. This provides the ability to use any input
 signal as an glottal excitation, turning the model into a formant filter.
 Compared to the main implementation in |@<Voc Compute@>|, this function
@@ -129,7 +129,7 @@ int sp_voc_tract_compute(sp_data *sp, sp_voc *voc, SPFLOAT *in, SPFLOAT *out)
     return SP_OK;
 }
 
-@ The function |sp_voc_set_frequency| sets the fundamental frequency
+@ The function |sp_voc_set_frequency()| sets the fundamental frequency
 for the glottal wave.
 
 @<Voc Set Frequency@>=
@@ -138,8 +138,8 @@ void sp_voc_set_frequency(sp_voc *voc, SPFLOAT freq)
     voc->glot.freq = freq;
 }
 
-@ The function |sp_voc_get_frequency_ptr| returns a pointer to the variable holding
-the frequency. This allows values to be set and read directly without. The
+@ The function |sp_voc_get_frequency_ptr()| returns a pointer to the variable holding
+the frequency. This allows values to be set and read directly without the
 use of a helper function. This function was notably created for use in a
 demo using the GUI library Nuklear.
 @<Voc Get Frequency@>=
@@ -157,8 +157,8 @@ SPFLOAT* sp_voc_get_tract_diameters(sp_voc *voc)
     return voc->tr.target_diameter;
 }
 
-@ Similar to |sp_voc_get_tract_diameters| in |@<Voc Get Tract Diameters@>|,
-the function |sp_voc_get_current_tract_diameters| returns the diameters
+@ Similar to |sp_voc_get_tract_diameters()| in |@<Voc Get Tract Diameters@>|,
+the function |sp_voc_get_current_tract_diameters()| returns the diameters
 of the tract. The difference is that this function returns the
 actual slewed diameters used in |@<Reshape Vocal Tract@>|, rather than
 the target diameters.
@@ -267,7 +267,7 @@ void sp_voc_set_tongue_shape(sp_voc *voc,
 @ Voc keeps an internal counter for control rate operations called inside
 of the audio-rate compute function in |@<Voc Compute@>|. The function
 |sp_voc_get_counter()| gets the current counter position. When the counter
-is 0, the next call to |sp_voc_compute| will compute another block of audio.
+is 0, the next call to |sp_voc_compute()| will compute another block of audio.
 Getting the counter position before the call allows control-rate variables
 to be set before then.
 
@@ -278,7 +278,7 @@ int sp_voc_get_counter(sp_voc *voc)
     return voc->counter;
 }
 
-@ The function |sp_voc_set_glottis_enable| controls the on/off state of
+@ The function |sp_voc_set_glottis_enable()| controls the on/off state of
 the glottis.  Attack and release envelopes are applied on transitions.
 @<Voc Set Glottis Enable@>=
 void sp_voc_set_glottis_enable(sp_voc *voc, int enable)
@@ -286,7 +286,7 @@ void sp_voc_set_glottis_enable(sp_voc *voc, int enable)
     voc->glot.enable = enable;
 }
 
-@ The function |sp_voc_set_tenseness| is used to set the tenseness variable,
+@ The function |sp_voc_set_tenseness()| is used to set the tenseness variable,
 used when calculating glottal time coefficients in
 |@<Set up Glottis Waveform@>|, and is the main factor in calculating
 aspiration noise in |@<Glottis Computation@>|. Typically this is a value
@@ -300,7 +300,7 @@ void sp_voc_set_tenseness(sp_voc *voc, SPFLOAT tenseness)
     voc->glot.tenseness = tenseness;
 }
 
-@ The function |sp_voc_get_tenseness_ptr| returns an |SPFLOAT| pointer to the
+@ The function |sp_voc_get_tenseness_ptr()| returns an |SPFLOAT| pointer to the
 parameter value directly controlling tenseness. This function is useful for
 GUI frontends that use direct pointer manipulation like Nuklear, the
 cross-platform UI framework used to make a demo for Voc.
@@ -311,7 +311,7 @@ SPFLOAT * sp_voc_get_tenseness_ptr(sp_voc *voc)
     return &voc->glot.tenseness;
 }
 
-@ The function |sp_voc_set_velum| sets the {\it velum}, or soft pallette of
+@ The function |sp_voc_set_velum()| sets the {\it velum}, or soft pallette of
 tract model.  In the original implementation, the default value is 0.01, and
 set to a value of 0.04 to get a nasally sound.
 
@@ -321,7 +321,7 @@ void sp_voc_set_velum(sp_voc *voc, SPFLOAT velum)
     voc->tr.velum_target = velum;
 }
 
-@ The function |sp_voc_get_velum_ptr| returns the pointer associated with
+@ The function |sp_voc_get_velum_ptr()| returns the pointer associated with
 the velum, allowing direct control of the velum parameter. This function was
 created for use with a demo requiring direct access.
 

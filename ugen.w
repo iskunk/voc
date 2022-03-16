@@ -195,7 +195,7 @@ voc = pd->last->ud;
 sp_voc_destroy(&voc);
 
 @ A dynamically loaded sporth unit-generated such as the one defined here
-needs to have a globally accessible function called |sporth_return_ugen|.
+needs to have a globally accessible function called |sporth_return_ugen()|.
 All this function needs to do is return the ugen function, which is of type
 |plumber_dyn_func|.
 @<Return Function@>=

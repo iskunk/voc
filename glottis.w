@@ -12,7 +12,7 @@ LF-model\cite{lu2000glottal}.
 @<Glottis Update@>@/
 @<Glottis Computation@>@/
 
-@ Initializiation of the glottis is done inside of |glottis_init|.
+@ Initializiation of the glottis is done inside of |glottis_init()|.
 
 @<Glottis Initialization@>=
 static void glottis_init(glottis *glot, SPFLOAT sr)
@@ -85,7 +85,7 @@ static SPFLOAT glottis_compute(sp_data *sp, glottis *glot, SPFLOAT lambda)
     return out * glot->intensity;
 }
 
-@ The function |glottis_setup_waveform| is tasked with setting the variables
+@ The function |glottis_setup_waveform()| is tasked with setting the variables
 needed to create the glottis waveform. The glottal model used here is known
 as the LF-model, as described in Lu and Smith\cite{lu2000glottal}.
 

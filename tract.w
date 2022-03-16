@@ -3,8 +3,8 @@ The vocal tract is the part of the vocal model which takes the
 excitation signal (the glottis) and produces the vowel formants from it.
 
 The two main functions for the vocal tract consist of of an initialization
-function |tract_init| called once before runtime, and a computation
-function |tract_compute| called at twice the sampling rate. See
+function |tract_init()| called once before runtime, and a computation
+function |tract_compute()| called at twice the sampling rate. See
 |@<Vocal Tract Init...@>| and |@<Vocal Tract Computation...@>| for more
 detail.
 
@@ -16,7 +16,7 @@ detail.
 @<Vocal Tract Init...@>@/
 @<Vocal Tract Computation...@>@/
 
-@ The function |tract_init| is responsible for zeroing out variables
+@ The function |tract_init()| is responsible for zeroing out variables
 and buffers, as well as setting up constants.
 
 @<Vocal Tract Initialization@>=
@@ -129,7 +129,7 @@ As the original implementation describes it, this function is designed
 to run at twice the sampling rate. For this reason, it is called twice
 in the top level call back (see |@<Voc Create@>|).
 
-|tract_compute| has two input arguments. The variable |in|
+|tract_compute()| has two input arguments. The variable |in|
 is the glottal excitation signal. The |lambda| variable is a coefficient
 for a linear crossfade along the buffer block, used for parameter smoothing.
 @<Vocal Tract Computation...@>=
@@ -201,7 +201,7 @@ for(i = 0; i < tr->nose_length; i++) {
 }
 tr->nose_output = tr->noseR[tr->nose_length - 1];
 
-@ The function |tract_calculate_reflections| computes reflection
+@ The function |tract_calculate_reflections()| computes reflection
 coefficients used in the scattering junction. Because this is a rather
 computationally expensive function, it is called once per render block,
 and then smoothed.
@@ -252,7 +252,7 @@ static void tract_calculate_reflections(tract *tr)
     tr->new_reflection_nose = (SPFLOAT)(2 * tr->noseA[0] - sum) / sum;
 }
 
-@ Similar to |tract_calculate_reflections|, this function computes
+@ Similar to |tract_calculate_reflections()|, this function computes
 reflection coefficients for the nasal scattering junction. For more
 information on the math that is happening, see
 |@<Calculate Vocal Tract Reflections@>|.
@@ -413,7 +413,7 @@ static int append_transient(transient_pool *pool, int position)
     return 0;
 }
 
-@ When a transient has lived it's lifetime, it must be removed from the list of
+@ When a transient has lived its lifetime, it must be removed from the list of
 transients. To keep things sane, transients have a unique ID for identification.
 This is preferred to comparing pointer addresses. While more efficient, this
 method is prone to subtle implementation errors.
@@ -470,7 +470,7 @@ components.
 
 This particular function also must check for any transients that need to
 be removed, and removes them. Some caution must be made to make sure that
-this is done properly. Because a call to |remove_transient| changes the
+this is done properly. Because a call to |remove_transient()| changes the
 size of the pool, a copy of the current size is copied to a variable for the
 for loop.
 Since the list iterates in order, it is presumably

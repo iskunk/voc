@@ -56,7 +56,7 @@ A very successful example of literate programming is the book {\it Physically Ba
 Rendering} \cite{pharr2016physically}, which is both a textbook and software implementation of a
 physically accurate ray tracer.
 
-The underlying technology used here is CWEB\cite{knuth1994cweb},
+The underlying technology used here is CWEB \cite{knuth1994cweb},
 the definitive literate programming
 tool developed by Donald Knuth, with some minor macro adjustments for formatting.
 

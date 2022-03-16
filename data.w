@@ -12,7 +12,7 @@ ANSI C doesn't have the constant |M_PI|, so it has to be explicitly defined.
 
 Both |MIN| and |MAX| macros are defined.
 
-The header file |string.h| is included so that |memset| can be used to
+The header file |string.h| is included so that |memset()| can be used to
 zero arrays.
 
 There is exactly one local header file called |voc.h|, which
@@ -148,7 +148,7 @@ typedef struct transient {
 
 @ A pre-allocated set of transients and other parameters are used in what
 will be known as a {\it transient pool}. A memory pool is an ideal choice for
-realtime systems instead of dynamic memory. Calls to |malloc| are discouraged
+realtime systems instead of dynamic memory. Calls to |malloc()| are discouraged
 because it adds performance overhead and possible blocking behavior, and there
 is a greater chance of memory leaks or segfaults if not handled properly.
 
